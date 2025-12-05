@@ -14,7 +14,7 @@
 ### 1.1 Git 저장소 초기화 (아직 안 했다면)
 
 ```bash
-cd /Users/jrkim/Projects/dashboard
+cd /Users/jrkim/Projects/echarts-ai-studio
 git init
 git add .
 git commit -m "Initial commit"
@@ -163,6 +163,7 @@ Vercel은 기본적으로 GitHub 저장소와 연동되어 있습니다:
 **증상**: 배포가 실패하고 빌드 로그에 오류가 표시됨
 
 **해결 방법**:
+
 1. 빌드 로그 확인
 2. 환경 변수가 모두 설정되었는지 확인
 3. 로컬에서 `npm run build` 실행하여 오류 확인
@@ -173,6 +174,7 @@ Vercel은 기본적으로 GitHub 저장소와 연동되어 있습니다:
 **증상**: 사이트는 로드되지만 Firebase 연결 실패
 
 **해결 방법**:
+
 1. Vercel 환경 변수 설정 확인
 2. 변수 이름에 오타가 없는지 확인 (`NEXT_PUBLIC_` 접두사 필수)
 3. 변수 값이 올바른지 확인
@@ -183,6 +185,7 @@ Vercel은 기본적으로 GitHub 저장소와 연동되어 있습니다:
 **증상**: "Permission denied" 오류 발생
 
 **해결 방법**:
+
 1. Firebase Console에서 Realtime Database 규칙 확인
 2. 배포된 도메인을 허용 목록에 추가
 3. Firebase 보안 규칙 문서 참고: `docs/FIREBASE_SETUP.md`
@@ -192,6 +195,7 @@ Vercel은 기본적으로 GitHub 저장소와 연동되어 있습니다:
 **증상**: AI 기능이 작동하지 않음
 
 **해결 방법**:
+
 1. `OPENAI_API_KEY` 환경 변수가 설정되었는지 확인
 2. API 키가 유효한지 확인
 3. OpenAI 계정의 사용량 한도 확인
@@ -212,12 +216,14 @@ Vercel은 기본적으로 GitHub 저장소와 연동되어 있습니다:
 코드를 수정한 후:
 
 1. 변경사항을 커밋:
+
    ```bash
    git add .
    git commit -m "Update: 변경사항 설명"
    ```
 
 2. GitHub에 푸시:
+
    ```bash
    git push origin main
    ```
@@ -229,8 +235,9 @@ Vercel은 기본적으로 GitHub 저장소와 연동되어 있습니다:
 
 - [Vercel 공식 문서](https://vercel.com/docs)
 - [Next.js 배포 가이드](https://nextjs.org/docs/deployment)
-- [Firebase 설정 가이드](./FIREBASE_SETUP.md)
-- [OpenAI API 설정 가이드](./OPENAI_API_SETUP.md)
+- [Firebase 설정 가이드](./03-Firebase-설정-가이드.md)
+- [OpenAI API 설정 가이드](./04-OpenAI-API-설정-가이드.md)
+- [환경 변수 설정 가이드](./02-환경변수-설정-가이드.md)
 
 ## 💡 팁
 
@@ -244,4 +251,3 @@ Vercel은 기본적으로 GitHub 저장소와 연동되어 있습니다:
 배포가 완료되면 프로젝트가 전 세계 어디서나 접근 가능한 URL로 제공됩니다!
 
 배포된 URL 형식: `https://your-project-name.vercel.app`
-
