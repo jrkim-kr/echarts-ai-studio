@@ -76,11 +76,15 @@ export default function Home() {
 
   const handleChartGenerated = async (config: ChartConfig, prompt: string) => {
     // 차트 설정 유효성 검사
-    if (!config || !config.series || (Array.isArray(config.series) && config.series.length === 0)) {
-      console.error('차트 생성 실패: 유효하지 않은 차트 설정', config);
+    if (
+      !config ||
+      !config.series ||
+      (Array.isArray(config.series) && config.series.length === 0)
+    ) {
+      console.error("차트 생성 실패: 유효하지 않은 차트 설정", config);
       setToast({
-        message: '차트 생성에 실패했습니다. 프롬프트와 데이터를 확인해주세요.',
-        type: 'error',
+        message: "차트 생성에 실패했습니다. 프롬프트와 데이터를 확인해주세요.",
+        type: "error",
       });
       return;
     }
@@ -108,12 +112,12 @@ export default function Home() {
               ...config,
               version: version,
             },
-            prompt: prompt || '', // JSON 모드일 경우 빈 문자열도 허용
+            prompt: prompt || "", // JSON 모드일 경우 빈 문자열도 허용
             createdAt: new Date().toISOString(),
             autoSaved: true,
             version: version,
           },
-          prompt: prompt || '', // 프롬프트가 없어도 저장 (JSON 모드 지원)
+          prompt: prompt || "", // 프롬프트가 없어도 저장 (JSON 모드 지원)
         });
       } catch (error: any) {
         console.error("자동 저장 실패:", error);
@@ -149,7 +153,14 @@ export default function Home() {
       {/* 상단 헤더 */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center">
-          <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              startNewProject();
+              clearChart();
+              setCurrentPrompt("");
+            }}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <div className="w-8 h-8 bg-blue-500 rounded-xl flex items-center justify-center">
               <svg
                 className="w-5 h-5 text-white"
@@ -165,8 +176,10 @@ export default function Home() {
                 />
               </svg>
             </div>
-            <h1 className="text-xl font-bold text-gray-900">ECharts AI Studio</h1>
-          </div>
+            <h1 className="text-xl font-bold text-gray-900">
+              ECharts AI Studio
+            </h1>
+          </button>
         </div>
       </header>
 
@@ -187,10 +200,10 @@ export default function Home() {
                 const project = await getProject(projectId);
                 if (project && project.charts && project.charts.length > 0) {
                   // 특정 차트 ID가 있으면 해당 차트, 없으면 최신 차트
-                  const targetChart = chartId 
+                  const targetChart = chartId
                     ? project.charts.find((c: any) => c.id === chartId)
                     : project.charts[0];
-                  
+
                   if (targetChart) {
                     updateChart(targetChart.config, targetChart.prompt || "");
                     setCurrentPrompt(targetChart.prompt || "");
@@ -216,8 +229,12 @@ export default function Home() {
               <div className="mb-3">
                 <h2 className="text-lg font-bold text-gray-900">프롬프트</h2>
               </div>
-              <div className="bg-white rounded-xl border border-gray-200 p-4" style={{ height: '70vh' }}>
+              <div
+                className="bg-white rounded-xl border border-gray-200 p-4"
+                style={{ height: "70vh" }}
+              >
                 <PromptInput
+                  key={currentProjectId || "new-project"}
                   onChartGenerated={handleChartGenerated}
                   loading={loading}
                   setLoading={setLoading}
@@ -237,11 +254,11 @@ export default function Home() {
               <h2 className="text-lg font-bold text-gray-900">차트</h2>
             </div>
             {chartConfig ? (
-              <div 
-                className="bg-white rounded-xl border border-gray-200 p-4" 
-                style={{ 
-                  height: '70vh',
-                  position: 'relative',
+              <div
+                className="bg-white rounded-xl border border-gray-200 p-4"
+                style={{
+                  height: "70vh",
+                  position: "relative",
                   zIndex: 1,
                 }}
                 data-chart-wrapper
@@ -261,7 +278,10 @@ export default function Home() {
                 />
               </div>
             ) : (
-              <div className="bg-white rounded-xl border border-gray-200 p-4" style={{ height: '70vh' }}>
+              <div
+                className="bg-white rounded-xl border border-gray-200 p-4"
+                style={{ height: "70vh" }}
+              >
                 <div className="text-center h-full flex flex-col items-center justify-center">
                   <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <svg
@@ -282,7 +302,8 @@ export default function Home() {
                     차트를 생성해보세요
                   </h3>
                   <p className="text-gray-500 text-xs">
-                    왼쪽 입력창에 데이터나 요구사항을 입력하면 차트가 생성됩니다.
+                    왼쪽 입력창에 데이터나 요구사항을 입력하면 차트가
+                    생성됩니다.
                   </p>
                 </div>
               </div>
@@ -327,7 +348,9 @@ export default function Home() {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <p className="text-gray-500 text-sm mb-4">아직 생성된 프로젝트가 없습니다.</p>
+              <p className="text-gray-500 text-sm mb-4">
+                아직 생성된 프로젝트가 없습니다.
+              </p>
               <button
                 onClick={() => {
                   startNewProject();
@@ -336,8 +359,18 @@ export default function Home() {
                 }}
                 className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md flex items-center gap-2 mx-auto"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
                 새 프로젝트 생성
               </button>

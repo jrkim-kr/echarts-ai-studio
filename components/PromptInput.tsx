@@ -6,7 +6,7 @@ import { generateChart } from "@/lib/llm";
 import { getProject } from "@/lib/firebase";
 import { ChartConfig } from "@/types";
 
-type InputMode = 'prompt' | 'json';
+type InputMode = "prompt" | "json";
 
 interface PromptInputProps {
   onChartGenerated: (config: ChartConfig, prompt: string) => void;
@@ -29,7 +29,7 @@ export default function PromptInput({
   currentChartConfig,
   onSelectPrompt,
 }: PromptInputProps) {
-  const [mode, setMode] = useState<InputMode>('prompt');
+  const [mode, setMode] = useState<InputMode>("prompt");
   const [prompt, setPrompt] = useState(initialPrompt);
   const [requirement, setRequirement] = useState(""); // 요구사항
   const [data, setData] = useState(""); // 데이터
@@ -40,50 +40,56 @@ export default function PromptInput({
 
   useEffect(() => {
     setPrompt(initialPrompt || "");
-    
+
     // 프롬프트가 비어있고 차트 설정이 있으면 JSON 모드로 전환
     if (!initialPrompt && currentChartConfig) {
-      setMode('json');
+      setMode("json");
       // JSON 코드를 차트 설정에서 불러오기
       try {
         const jsonString = JSON.stringify(currentChartConfig, null, 2);
         setJsonCode(jsonString);
       } catch (error) {
-        console.error('JSON 직렬화 실패:', error);
+        console.error("JSON 직렬화 실패:", error);
       }
       return;
     }
-    
+
     // initialPrompt가 변경될 때마다 요구사항과 데이터를 파싱하여 설정
     if (initialPrompt) {
       // 프롬프트 모드로 전환
-      setMode('prompt');
-      
+      setMode("prompt");
+
       // "요구사항:\n"과 "데이터:\n" 패턴으로 분리 시도
       const requirementSeparator = "요구사항:\n";
       const dataSeparator = "\n\n데이터:\n";
-      
+
       let reqPart = "";
       let dataPart = "";
-      
+
       // "요구사항:\n...\n\n데이터:\n..." 형식인지 확인
       const requirementIndex = initialPrompt.indexOf(requirementSeparator);
       const dataIndex = initialPrompt.indexOf(dataSeparator);
-      
+
       if (requirementIndex !== -1 && dataIndex !== -1) {
         // "요구사항:\n" 패턴이 있는 경우
-        reqPart = initialPrompt.substring(requirementIndex + requirementSeparator.length, dataIndex).trim();
-        dataPart = initialPrompt.substring(dataIndex + dataSeparator.length).trim();
+        reqPart = initialPrompt
+          .substring(requirementIndex + requirementSeparator.length, dataIndex)
+          .trim();
+        dataPart = initialPrompt
+          .substring(dataIndex + dataSeparator.length)
+          .trim();
       } else if (dataIndex !== -1) {
         // "데이터:\n" 패턴만 있는 경우
         reqPart = initialPrompt.substring(0, dataIndex).trim();
-        dataPart = initialPrompt.substring(dataIndex + dataSeparator.length).trim();
+        dataPart = initialPrompt
+          .substring(dataIndex + dataSeparator.length)
+          .trim();
       } else {
         // 분리 패턴이 없으면 전체를 요구사항으로 설정
         reqPart = initialPrompt.trim();
         dataPart = "";
       }
-      
+
       setRequirement(reqPart);
       setData(dataPart);
     } else {
@@ -110,7 +116,12 @@ export default function PromptInput({
         setJsonError(null);
         setRequirement("");
         setData("");
-        setMode('prompt');
+        setMode("prompt");
+        setImageFile(null);
+        setImagePreview(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     };
     loadPromptHistory();
@@ -119,15 +130,15 @@ export default function PromptInput({
   // 차트 설정이 변경될 때 JSON 모드면 JSON 코드 업데이트
   // 단, 프롬프트로 생성된 차트(initialPrompt가 있는 경우)는 제외
   useEffect(() => {
-    if (mode === 'json' && currentChartConfig && !initialPrompt) {
+    if (mode === "json" && currentChartConfig && !initialPrompt) {
       // 프롬프트가 없는 경우에만 JSON 코드 자동 표시 (JSON 모드로 생성된 차트)
       try {
         const jsonString = JSON.stringify(currentChartConfig, null, 2);
         setJsonCode(jsonString);
       } catch (error) {
-        console.error('JSON 직렬화 실패:', error);
+        console.error("JSON 직렬화 실패:", error);
       }
-    } else if (mode === 'json' && initialPrompt) {
+    } else if (mode === "json" && initialPrompt) {
       // 프롬프트가 있는 경우 JSON 모드로 전환해도 JSON 코드를 표시하지 않음
       setJsonCode("");
     }
@@ -150,22 +161,25 @@ export default function PromptInput({
 
   const handleJsonApply = () => {
     if (!jsonCode.trim()) {
-      setJsonError('JSON 코드를 입력해주세요.');
+      setJsonError("JSON 코드를 입력해주세요.");
       return;
     }
 
     try {
       // 입력값 정리
       let cleanedCode = jsonCode.trim();
-      
+
       // JavaScript 객체 리터럴 형식 처리
       cleanedCode = cleanedCode.replace(
         /new\s+echarts\.graphic\.LinearGradient\(([^)]*)\)/g,
-        'null'
+        "null"
       );
-      cleanedCode = cleanedCode.replace(/([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g, '$1"$2":');
-      cleanedCode = cleanedCode.replace(/;\s*$/, '');
-      
+      cleanedCode = cleanedCode.replace(
+        /([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g,
+        '$1"$2":'
+      );
+      cleanedCode = cleanedCode.replace(/;\s*$/, "");
+
       let parsed;
       try {
         parsed = JSON.parse(cleanedCode);
@@ -174,47 +188,57 @@ export default function PromptInput({
         try {
           const mockEcharts = {
             graphic: {
-              LinearGradient: function(x0: number, y0: number, x1: number, y1: number, colorStops: any[]) {
+              LinearGradient: function (
+                x0: number,
+                y0: number,
+                x1: number,
+                y1: number,
+                colorStops: any[]
+              ) {
                 return {
-                  type: 'linear',
+                  type: "linear",
                   x: x0,
                   y: y0,
                   x2: x1,
                   y2: y1,
-                  colorStops: colorStops
+                  colorStops: colorStops,
                 };
-              }
-            }
+              },
+            },
           };
-          const originalCode = jsonCode.trim().replace(/;\s*$/, '');
-          const func = new Function('echarts', 'return ' + originalCode);
+          const originalCode = jsonCode.trim().replace(/;\s*$/, "");
+          const func = new Function("echarts", "return " + originalCode);
           parsed = func(mockEcharts);
-          parsed = JSON.parse(JSON.stringify(parsed, (key, value) => {
-            if (typeof value === 'function' || value === undefined) {
-              return null;
-            }
-            return value;
-          }));
+          parsed = JSON.parse(
+            JSON.stringify(parsed, (key, value) => {
+              if (typeof value === "function" || value === undefined) {
+                return null;
+              }
+              return value;
+            })
+          );
         } catch (jsError: any) {
-          throw new Error(parseError.message || 'JSON 파싱 오류가 발생했습니다.');
+          throw new Error(
+            parseError.message || "JSON 파싱 오류가 발생했습니다."
+          );
         }
       }
-      
-      if (typeof parsed !== 'object' || parsed === null) {
-        throw new Error('유효한 JSON 객체가 아닙니다.');
+
+      if (typeof parsed !== "object" || parsed === null) {
+        throw new Error("유효한 JSON 객체가 아닙니다.");
       }
 
       if (!parsed.series && !parsed.xAxis && !parsed.yAxis) {
-        throw new Error('유효한 ECharts 옵션 형식이 아닙니다.');
+        throw new Error("유효한 ECharts 옵션 형식이 아닙니다.");
       }
 
       // JSON 모드로 생성된 차트는 빈 프롬프트로 저장
-      const prompt = '';
+      const prompt = "";
       setJsonError(null);
       onChartGenerated(parsed, prompt);
     } catch (err: any) {
-      console.error('JSON 적용 실패:', err);
-      setJsonError(err.message || 'JSON 파싱 오류가 발생했습니다.');
+      console.error("JSON 적용 실패:", err);
+      setJsonError(err.message || "JSON 파싱 오류가 발생했습니다.");
     }
   };
 
@@ -255,12 +279,14 @@ export default function PromptInput({
         imageFile,
         isImprovementRequest ? currentChartConfig : null
       );
-      
+
       // 차트 설정이 제대로 생성되었는지 확인
       if (!config || !config.series) {
-        throw new Error('차트 생성에 실패했습니다. 프롬프트와 데이터를 확인해주세요.');
+        throw new Error(
+          "차트 생성에 실패했습니다. 프롬프트와 데이터를 확인해주세요."
+        );
       }
-      
+
       onChartGenerated(config, combinedPrompt);
       // 이미지만 초기화 (프롬프트는 유지)
       setImageFile(null);
@@ -315,60 +341,60 @@ export default function PromptInput({
       {/* 모드 선택 탭 */}
       <div className="flex items-center gap-1 mb-3 border-b border-gray-200">
         <button
-          onClick={() => setMode('prompt')}
+          onClick={() => setMode("prompt")}
           className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-            mode === 'prompt'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+            mode === "prompt"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500 hover:text-gray-700"
           }`}
         >
           프롬프트 모드
         </button>
         <button
-          onClick={() => setMode('json')}
+          onClick={() => setMode("json")}
           className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-            mode === 'json'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+            mode === "json"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500 hover:text-gray-700"
           }`}
         >
           JSON 모드
         </button>
       </div>
 
-      {mode === 'prompt' ? (
+      {mode === "prompt" ? (
         <div className="space-y-2 flex-1 flex flex-col">
-        {/* 요구사항 입력란 */}
-        <div className="flex-1 flex flex-col">
-          <label className="block text-xs font-medium text-gray-500 mb-0.5">
-            요구사항
-          </label>
-          <textarea
-            value={requirement}
-            onChange={(e) => setRequirement(e.target.value)}
-            placeholder="차트 유형과 요구사항을 입력하세요"
-            className="w-full flex-1 px-3 py-2 bg-gray-50 border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none overflow-y-auto text-sm leading-relaxed transition-all"
-            style={{
-              scrollbarGutter: "stable",
-            }}
-          />
-        </div>
+          {/* 요구사항 입력란 */}
+          <div className="flex-1 flex flex-col">
+            <label className="block text-xs font-medium text-gray-500 mb-0.5">
+              요구사항
+            </label>
+            <textarea
+              value={requirement}
+              onChange={(e) => setRequirement(e.target.value)}
+              placeholder="차트 유형과 요구사항을 입력하세요"
+              className="w-full flex-1 px-3 py-2 bg-gray-50 border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none overflow-y-auto text-sm leading-relaxed transition-all"
+              style={{
+                scrollbarGutter: "stable",
+              }}
+            />
+          </div>
 
-        {/* 데이터 입력란 */}
-        <div className="flex-1 flex flex-col">
-          <label className="block text-xs font-medium text-gray-500 mb-0.5">
-            데이터
-          </label>
-          <textarea
-            value={data}
-            onChange={(e) => setData(e.target.value)}
-            placeholder="데이터를 입력하세요 (예: 스타벅스: 100, 네스프레소: 200)"
-            className="w-full flex-1 px-3 py-2 bg-gray-50 border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none overflow-y-auto text-sm leading-relaxed transition-all"
-            style={{
-              scrollbarGutter: "stable",
-            }}
-          />
-        </div>
+          {/* 데이터 입력란 */}
+          <div className="flex-1 flex flex-col">
+            <label className="block text-xs font-medium text-gray-500 mb-0.5">
+              데이터
+            </label>
+            <textarea
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              placeholder="데이터를 입력하세요 (예: 스타벅스: 100, 네스프레소: 200)"
+              className="w-full flex-1 px-3 py-2 bg-gray-50 border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none overflow-y-auto text-sm leading-relaxed transition-all"
+              style={{
+                scrollbarGutter: "stable",
+              }}
+            />
+          </div>
 
           {/* 하단 액션 버튼 */}
           <div className="flex items-center justify-end gap-2 pt-1">
@@ -446,11 +472,22 @@ export default function PromptInput({
             </label>
             <div className="mb-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-start gap-2">
-                <svg className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <p className="text-xs text-blue-800">
-                  JavaScript 객체 리터럴 형식도 지원합니다. 함수 호출(new echarts.graphic.LinearGradient 등)은 자동으로 처리됩니다.
+                  JavaScript 객체 리터럴 형식도 지원합니다. 함수 호출(new
+                  echarts.graphic.LinearGradient 등)은 자동으로 처리됩니다.
                 </p>
               </div>
             </div>
@@ -482,8 +519,18 @@ export default function PromptInput({
             {jsonError && (
               <div className="mt-2 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg border border-red-200">
                 <div className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <p>{jsonError}</p>
                 </div>
@@ -581,7 +628,6 @@ export default function PromptInput({
           )}
         </div>
       )}
-
     </div>
   );
 }
