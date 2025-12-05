@@ -1,0 +1,156 @@
+# 🚀 빠른 시작 가이드
+
+이 문서는 프로젝트를 빠르게 실행하는 방법을 안내합니다.
+
+## 1단계: 의존성 설치
+
+프로젝트 폴더에서 다음 명령어를 실행하세요:
+
+```bash
+cd /Users/jrkim/Projects/dashboard
+npm install
+```
+
+이 명령어는 `package.json`에 정의된 모든 패키지를 설치합니다.
+
+## 2단계: 환경 변수 설정
+
+### 필수: Firebase 설정
+
+`.env.local` 파일을 프로젝트 루트에 생성하고 Firebase 설정을 추가하세요:
+
+```bash
+# 프로젝트 루트에서 실행
+touch .env.local
+```
+
+`.env.local` 파일에 다음 내용을 추가하세요:
+
+```env
+# Firebase 설정 (필수)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://your_project-default-rtdb.asia-southeast1.firebasedatabase.app
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+# OpenAI API (선택사항 - AI 기능 사용 시)
+OPENAI_API_KEY=your_openai_api_key
+```
+
+**📖 Firebase 설정 방법:**
+
+- 상세 가이드: [`docs/FIREBASE_SETUP.md`](./docs/FIREBASE_SETUP.md)
+- 빠른 가이드: [`docs/SETUP_GUIDE.md`](./docs/SETUP_GUIDE.md)
+
+### 선택사항: OpenAI API 설정
+
+AI 기반 차트 생성을 사용하려면 OpenAI API 키가 필요합니다.
+
+**📖 OpenAI API 설정 방법:**
+
+- 상세 가이드: [`docs/OPENAI_API_SETUP.md`](./docs/OPENAI_API_SETUP.md)
+
+**참고:** OpenAI API 키가 없어도 기본 차트 생성 기능은 사용할 수 있습니다.
+
+## 3단계: 개발 서버 실행
+
+환경 변수 설정이 완료되면 개발 서버를 실행하세요:
+
+```bash
+npm run dev
+```
+
+서버가 시작되면 다음과 같은 메시지가 표시됩니다:
+
+```
+  ▲ Next.js 14.2.5
+  - Local:        http://localhost:3000
+  - ready started server on 0.0.0.0:3000
+```
+
+## 4단계: 브라우저에서 확인
+
+브라우저를 열고 다음 주소로 접속하세요:
+
+**http://localhost:3000**
+
+## 실행 명령어 요약
+
+```bash
+# 1. 의존성 설치 (최초 1회)
+npm install
+
+# 2. 환경 변수 설정 (.env.local 파일 생성 및 설정)
+
+# 3. 개발 서버 실행
+npm run dev
+
+# 4. 브라우저에서 http://localhost:3000 접속
+```
+
+## 기타 유용한 명령어
+
+```bash
+# 프로덕션 빌드
+npm run build
+
+# 프로덕션 서버 실행
+npm run start
+
+# 코드 린팅
+npm run lint
+```
+
+## 문제 해결
+
+### 문제: `npm install` 오류
+
+**해결:**
+
+- Node.js 버전 확인 (v18 이상 권장)
+- `node_modules` 폴더 삭제 후 재설치:
+  ```bash
+  rm -rf node_modules package-lock.json
+  npm install
+  ```
+
+### 문제: 환경 변수가 적용되지 않음
+
+**해결:**
+
+- `.env.local` 파일이 프로젝트 루트에 있는지 확인
+- 개발 서버를 재시작 (`Ctrl + C` 후 `npm run dev`)
+- 변수명에 `NEXT_PUBLIC_` 접두사가 있는지 확인 (Firebase 변수)
+
+### 문제: Firebase 연결 오류
+
+**해결:**
+
+- Firebase Console에서 프로젝트가 생성되었는지 확인
+- Realtime Database가 활성화되었는지 확인
+- 보안 규칙이 올바르게 설정되었는지 확인
+- `.env.local`의 `NEXT_PUBLIC_FIREBASE_DATABASE_URL`이 정확한지 확인
+
+### 문제: 포트 3000이 이미 사용 중
+
+**해결:**
+
+- 다른 포트로 실행:
+  ```bash
+  PORT=3001 npm run dev
+  ```
+- 또는 3000 포트를 사용하는 프로세스 종료
+
+## 다음 단계
+
+프로젝트가 실행되면:
+
+1. **프롬프트 입력**: 요구사항과 데이터를 입력하여 차트 생성
+2. **프로젝트 관리**: 생성된 차트를 프로젝트별로 관리
+3. **차트 개선**: 기존 차트를 자연어로 개선
+4. **이미지 저장**: 생성된 차트를 PNG로 다운로드
+
+더 자세한 내용은 [`README.md`](./README.md)를 참고하세요.
