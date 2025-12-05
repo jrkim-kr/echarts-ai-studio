@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { generateChart } from "@/lib/llm";
 import { getProject } from "@/lib/firebase";
 import { ChartConfig } from "@/types";
@@ -539,10 +540,13 @@ export default function PromptInput({
       {imagePreview && (
         <div className="mt-3 flex items-center gap-3">
           <div className="relative group">
-            <img
+            <Image
               src={imagePreview}
               alt="Preview"
               className="w-20 h-20 object-cover rounded-xl border border-gray-200 shadow-sm"
+              width={80}
+              height={80}
+              unoptimized
             />
             <button
               onClick={() => {

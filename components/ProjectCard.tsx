@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import * as echarts from 'echarts';
 import { updateProjectName, getProject, deleteProject } from '@/lib/firebase';
 import { Project } from '@/types';
@@ -187,10 +188,13 @@ export default function ProjectCard({ project, onOpen, onUpdate, onDelete }: Pro
       <div onClick={() => onOpen(project.id)} className="cursor-pointer">
         <div className="w-full h-32 bg-blue-50 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative">
           {chartImageUrl ? (
-            <img
+            <Image
               src={chartImageUrl}
               alt={`${project.name} 차트`}
               className="w-full h-full object-contain"
+              width={400}
+              height={300}
+              unoptimized
             />
           ) : latestChartConfig ? (
             <div className="flex items-center justify-center">

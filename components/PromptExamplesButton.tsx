@@ -52,7 +52,7 @@ export default function PromptExamplesButton() {
               <div>
                 <span className="font-semibold text-gray-700 mb-1 block">요구사항:</span>
                 <div className="bg-white border border-gray-200 rounded-lg p-3 text-gray-900 font-mono text-xs">
-                  "제조사별 판매량을 바 차트로 만들어줘"
+                  &quot;제조사별 판매량을 바 차트로 만들어줘&quot;
                 </div>
               </div>
               <div>
@@ -78,7 +78,7 @@ export default function PromptExamplesButton() {
                 <div className="text-xs text-blue-700">
                   <p className="font-semibold mb-1">💡 팁</p>
                   <p>• 이미지 업로드 시 기본적으로 스타일만 참고합니다</p>
-                  <p>• "이미지에서 데이터 추출" 등의 키워드를 포함하면 이미지 데이터를 사용합니다</p>
+                  <p>• &quot;이미지에서 데이터 추출&quot; 등의 키워드를 포함하면 이미지 데이터를 사용합니다</p>
                 </div>
               </div>
             </div>
