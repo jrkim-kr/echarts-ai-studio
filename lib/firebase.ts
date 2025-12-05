@@ -13,6 +13,7 @@ import {
   orderByChild,
   Database,
 } from "firebase/database";
+import { getFirebaseConfig } from "./storage";
 
 let app: FirebaseApp | null = null;
 let db: Database | null = null;
@@ -20,22 +21,14 @@ let db: Database | null = null;
 export function initializeFirebase() {
   if (app) return app;
 
-  const firebaseConfig = {
-    // Firebase 설정은 환경 변수에서 가져옵니다
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  };
+  // 로컬 스토리지에서 Firebase 설정 가져오기
+  const firebaseConfig = typeof window !== 'undefined' ? getFirebaseConfig() : null;
 
-  // 필수 환경 변수 확인
-  if (!firebaseConfig.apiKey || !firebaseConfig.databaseURL) {
-    console.warn("Firebase 환경 변수가 설정되지 않았습니다.");
+  // 필수 설정 확인
+  if (!firebaseConfig || !firebaseConfig.apiKey || !firebaseConfig.databaseURL) {
+    console.warn("Firebase 설정이 설정되지 않았습니다.");
     throw new Error(
-      "Firebase 설정이 완료되지 않았습니다. .env.local 파일을 확인하세요."
+      "Firebase 설정이 완료되지 않았습니다. 설정 메뉴에서 Firebase 설정을 입력해주세요."
     );
   }
 

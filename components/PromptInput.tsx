@@ -313,11 +313,14 @@ export default function PromptInput({
             "3. Hard limit을 $5 이상으로 설정 (또는 원하는 금액)\n\n" +
             "예산 설정 전까지는 기본 차트 생성 로직을 사용합니다."
         );
-      } else if (errorMessage.includes("OPENAI_API_KEY")) {
+      } else if (
+        errorMessage.includes("OPENAI_API_KEY") ||
+        errorMessage.includes("API 키")
+      ) {
         alert(
           "⚠️ OpenAI API 키 오류\n\n" +
-            ".env.local 파일에 OPENAI_API_KEY를 추가해주세요.\n" +
-            "자세한 내용은 OPENAI_API_SETUP.md를 참고하세요."
+            "설정 메뉴에서 OpenAI API 키를 입력해주세요.\n" +
+            "상단 헤더의 설정 버튼을 클릭하여 API 키를 설정할 수 있습니다."
         );
       } else {
         alert(`차트 생성 실패: ${errorMessage}`);

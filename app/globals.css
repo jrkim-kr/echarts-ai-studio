@@ -40,6 +40,61 @@ body {
   background: #a0aec0;
 }
 
+/* 설정 모달 전용 스크롤바 스타일 */
+.settings-modal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f9fafb;
+  /* 부드러운 스크롤 */
+  scroll-behavior: smooth;
+}
+
+/* Firefox용 스크롤바 스타일 */
+@supports (scrollbar-width: thin) {
+  .settings-modal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f9fafb;
+  }
+}
+
+/* Webkit 브라우저용 스크롤바 스타일 */
+.settings-modal-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-modal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+  margin: 8px 0;
+}
+
+.settings-modal-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #e5e7eb, #d1d5db);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 40px;
+}
+
+.settings-modal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #d1d5db, #9ca3af);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.settings-modal-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(to bottom, #9ca3af, #6b7280);
+}
+
+/* 스크롤 중일 때 스크롤바가 더 진하게 표시 */
+.settings-modal-scrollbar:active::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #9ca3af, #6b7280);
+}
+
+/* 모달이 호버될 때 스크롤바가 더 명확하게 표시 */
+.settings-modal-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #d1d5db, #9ca3af);
+}
+
 /* 애니메이션 */
 @keyframes slide-in {
   from {

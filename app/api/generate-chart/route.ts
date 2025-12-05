@@ -3,14 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 // OpenAI API를 호출하여 ECharts 설정을 생성하는 API 라우트
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, image, previousChartConfig } = await request.json();
+    const { prompt, image, previousChartConfig, apiKey: clientApiKey } = await request.json();
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    // 클라이언트에서 전달된 API 키만 사용 (로컬 스토리지에서 가져온 키)
+    const apiKey = clientApiKey;
     
     if (!apiKey) {
       // API 키가 없으면 에러 반환 (클라이언트에서 폴백 처리)
       return NextResponse.json(
-        { error: 'OPENAI_API_KEY가 설정되지 않았습니다. .env.local 파일에 API 키를 추가해주세요.' },
+        { error: 'OpenAI API 키가 설정되지 않았습니다. 설정 메뉴에서 API 키를 입력해주세요.' },
         { status: 400 }
       );
     }

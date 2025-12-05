@@ -114,6 +114,10 @@ export async function generateChart(
       });
     }
 
+    // 로컬 스토리지에서 OpenAI API 키 가져오기
+    const { getOpenAIApiKey } = await import('./storage');
+    const apiKey = typeof window !== 'undefined' ? getOpenAIApiKey() : null;
+
     // API 라우트 호출
     const response = await fetch('/api/generate-chart', {
       method: 'POST',
@@ -123,7 +127,8 @@ export async function generateChart(
       body: JSON.stringify({
         prompt,
         image: imageBase64,
-        previousChartConfig: previousChartConfig || null
+        previousChartConfig: previousChartConfig || null,
+        apiKey: apiKey || undefined // API 키 전달
       }),
     });
 
@@ -712,7 +717,9 @@ function generateSlopeChart(parsedData?: any[] | null) {
 
 // 실제 LLM API 호출 함수 (예시 - OpenAI 사용)
 export async function callLLMAPI(prompt: string, imageBase64?: string): Promise<any> {
-  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+  // 로컬 스토리지에서 OpenAI API 키 가져오기
+  const { getOpenAIApiKey } = await import('./storage');
+  const apiKey = typeof window !== 'undefined' ? getOpenAIApiKey() : null;
   
   if (!apiKey) {
     // API 키가 없으면 로컬 로직 사용
@@ -729,6 +736,7 @@ export async function callLLMAPI(prompt: string, imageBase64?: string): Promise<
       body: JSON.stringify({
         prompt,
         image: imageBase64,
+        apiKey: apiKey // API 키 전달
       }),
     });
 
